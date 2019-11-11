@@ -1,0 +1,207 @@
+spark
+----------------------
+spark core
+spark streaming
+spark sql
+spark mllib
+spark graha
+
+集群的部署模式
+local
+standlone
+yarn
+misos
+
+
+RDD
+resilient  distrbuted dataset 弹性分布式计算集
+spark context
+sc.textFile()  直接返回RDD
+
+
+基于scala 语言开发
+
+
+标签生成  D:\wujing\data\temptags.txt
+00213 分量足（20） 环境好（1）
+
+并行
+        集群上同时多个节点同时计算
+并发
+        单个节点同时发起的请求的能力
+
+
+三高
+    高并发
+    高负载
+    高吞吐量
+    ，
+
+
+Rdd
+----------------------
+RDD 是弹性分布式数据库
+    spark的基本抽象
+    分区划的集合
+    可用于并行计算
+
+RDD内部5大属性
+    分区列表
+    计算每个切片的函数
+    到其他RDD的依赖列表
+    针对KV类型的RDD的分区类
+    计算每个的首选的位置列表
+
+
+RDD 常见操作  都是延迟计算的，只有调用action方法时，才会触发job
+
+    1.  变换  返回新的RDD ->transform
+        map
+        filter
+        flatmap
+        mappartitons
+        sample
+        distinct
+        intersection
+        groupbykey ------->没有combine过程 能改变V的值
+        reducebykey -------->有combine过程 不能改变v的值
+
+        cogroup 协分组
+
+
+
+    2.  action
+            collect 产生action  执行运算
+                foreachPartition
+
+               repartition
+                    底层调用的是coalesce shuffle=true
+                    coalesce=再分区的核心方法，有机会指定是否shuffle,减少分区调用该方法
+                    def coalesce(numPartitions: Int, shuffle: Boolean = false,//默认不分区
+                                   partitionCoalescer: Option[PartitionCoalescer] = Option.empty)
+                                  (implicit ord: Ordering[T] = null)
+
+
+            按照Key聚合
+            aggregateBykey   //mr一般过程
+
+
+              def aggregateByKey[U: ClassTag](zeroValue: U)(seqOp: (U, V) => U,
+                  combOp: (U, U) => U): RDD[(K, U)] = self.withScope {
+                aggregateByKey(zeroValue, defaultPartitioner(self))(seqOp, combOp)
+              }
+              //map端聚合，分区內聚合
+
+        count()
+        take
+        frist
+        saveAsTextFile
+
+
+        Spark api
+
+            1.SparkConf
+                spark配置对象，设置各种参数，KV形式
+            2.SparkContext
+                spark的主要入口，代表到spark集群的连接，可以创建RDD，累加器和广播变量
+
+                JVM只有一个SparkContext  启动新的时，要stop之前的
+
+                sc.textFile
+
+            3.RDD
+                有依赖列表
+            4.Dependecy
+                依赖：子RDD与父Rdd分区之间数量的对应关系
+                    NarrowDependecy（窄依赖）
+                        one-to-one 一对一
+                        rang 范围
+                        prune 修建依赖
+
+                    ShuffleDependecy
+
+             5.stage
+                阶段是并行任务，由调度器运行的DAG图，根据Shuffle进行划分若干个Stage
+                阶段分为两种
+                   1.shuffleMapStage
+                    该阶段的输出是下一阶段的输入跟踪每个节点输出
+                    一个阶段会尝试执行多次处于容错考虑
+                    由多个ShuffleMapTask构成
+                   2.ResultStage
+                    应用函数在某些分区上计算函数，有些操作没必要在所有节点上   frist
+                    结果阶段的输出结果回传给driver
+                    由多个ResultTask构成 
+
+              6.task
+                spark执行的最小单位
+                    1.ResultTask
+						执行任务，并将结果返回给driver					
+                    2.ShuffleMapTask
+						将RDD的元素分成多个桶
+
+
+              7.ActiveJob
+                    每个action 是一个job
+					resultjob
+					ShuffleJob
+					
+              8.application
+                    一个应用对应多个Job 对应一个SparkContext                  
+					
+			  9.DAGScheduler
+					DAGScheduler可以提交job 也可以提交stage  只发生在driver端
+						高级调度器面向stage，负责为每个job计算stage的DAG,跟踪RDD和输出，以taskset的方式提交stage给下层的task调度器
+						spark是以shuffle为边界将RDD划分为多个stage
+						stage存储的前后关系
+						
+						DAGScheduler 会因为输出文件的丢失重复提交上一阶段的，其他原因导致的故障由task
+
+					driver:调度框架采用三级调度机制
+					
+					DAGScheduler  面向stage
+						|
+					TaskScheduler  面向任务集 taskset
+						|						
+					BackendScheduler 
+					
+								
+			
+				10.TaskSchedulerImpl
+				
+				11.SchedulerBackend
+				   impl-->CoarseGrainedSchedulerBackend
+							
+								-->StandaloneSchedulerBackend
+							
+						  LocalSchedulerBackend
+				
+
+Spark job的流程
+
+Spark 应用程序被提交后，当某个动作算子触发了计算操作时，SparkContext 会向 DAGScheduler 提交一个作业，接着 DAGScheduler 会根据 RDD 生成的依赖关系划分 Stage，并决定各个 Stage 之间的依赖关系，Stage 之间的依赖关系就形成了 DAG。Stage 的划分是以 ShuffleDependency 为依据的，也就是说当某个 RDD 的运算需要将数据进行 Shuffle 时，这个包含了 Shuffle 依赖关系的 RDD 将被用来作为输入信息，进而构建一个新的 Stage。我们可以看到用这样的方式划分 Stage，能够保证有依赖关系的数据可以以正确的顺序执行。根据每个 Stage 所依赖的 RDD 数据的 partition 的分布，会产生出与 partition 数量相等的 Task，这些 Task 根据 partition 的位置进行分布。其次对于 finalStage 或是 mapStage 会产生不同的 Task，最后所有的 Task 会封装到 TaskSet 内提交到 TaskScheduler 去执行
+
+作者：麦子星星
+链接：https://www.jianshu.com/p/ea44bfbb8da6
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
