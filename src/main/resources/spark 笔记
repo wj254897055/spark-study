@@ -178,12 +178,28 @@ RDD 常见操作  都是延迟计算的，只有调用action方法时，才会�
 
 Spark job的流程
 
-Spark 应用程序被提交后，当某个动作算子触发了计算操作时，SparkContext 会向 DAGScheduler 提交一个作业，接着 DAGScheduler 会根据 RDD 生成的依赖关系划分 Stage，并决定各个 Stage 之间的依赖关系，Stage 之间的依赖关系就形成了 DAG。Stage 的划分是以 ShuffleDependency 为依据的，也就是说当某个 RDD 的运算需要将数据进行 Shuffle 时，这个包含了 Shuffle 依赖关系的 RDD 将被用来作为输入信息，进而构建一个新的 Stage。我们可以看到用这样的方式划分 Stage，能够保证有依赖关系的数据可以以正确的顺序执行。根据每个 Stage 所依赖的 RDD 数据的 partition 的分布，会产生出与 partition 数量相等的 Task，这些 Task 根据 partition 的位置进行分布。其次对于 finalStage 或是 mapStage 会产生不同的 Task，最后所有的 Task 会封装到 TaskSet 内提交到 TaskScheduler 去执行
 
-作者：麦子星星
-链接：https://www.jianshu.com/p/ea44bfbb8da6
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+	spark job运行分两步
+	1.注册应用，分配资源
+	2.提交job
+
+https://www.jianshu.com/p/02a17ff44931
+
+  Spark 应用程序被提交后，当某个动作算子触发了计算操作时，
+  SparkContext 会向 DAGScheduler 提交一个作业，
+  接着 DAGScheduler 会根据 RDD 生成的依赖关系划分 Stage，
+  并决定各个 Stage 之间的依赖关系，Stage 之间的依赖关系就形成了 DAG。
+  Stage 的划分是以 ShuffleDependency 为依据的，
+  也就是说当某个 RDD 的运算需要将数据进行 Shuffle 时，
+  这个包含了 Shuffle 依赖关系的 RDD 将被用来作为输入信息，
+  进而构建一个新的 Stage。我们可以看到用这样的方式划分 Stage，
+  能够保证有依赖关系的数据可以以正确的顺序执行。
+  根据每个 Stage 所依赖的 RDD 数据的 partition 的分布，
+  会产生出与 partition 数量相等的 Task，这些 Task 根据 partition 的位置进行分布。
+  其次对于 finalStage 或是 mapStage 会产生不同的 Task，
+  最后所有的 Task 会封装到 TaskSet 内提交到 TaskScheduler 去执行
+
+
 
 
 
