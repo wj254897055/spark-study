@@ -16,7 +16,6 @@ object RDDRepartition {
     val rdd1 = sc.makeRDD((1 to 10),5)
     println("rdd1 pars:"+rdd1.partitions.length)
 
-    sc.textFile()
 
     val rdd2=rdd1.map(e=>{
       val tname = Thread.currentThread().getName

@@ -198,8 +198,63 @@ https://www.jianshu.com/p/02a17ff44931
   会产生出与 partition 数量相等的 Task，这些 Task 根据 partition 的位置进行分布。
   其次对于 finalStage 或是 mapStage 会产生不同的 Task，
   最后所有的 Task 会封装到 TaskSet 内提交到 TaskScheduler 去执行
+  
+  
+  
+  
+  
+ Spark 回顾
+ ------------------------
+ spark的核心组件
+ 
+ 
+ sparkConfig  配置对象 KV形式
+ sparkContext  入口 创建RDD 累加器和广播变量 
+ stage     阶段 Rdd的链条
+ task
+ dependecy
+ rdd
+ job
+ excutor
+ 
+ 
+ 
+ job的部署模式
+	1.client
+		默认模式
+		driver程序运行在client的节点
+		
+	2.cluster
+		driver运行在某一个worker上  进程名称 DriverWrapper
+		spark-shell 不能 以集群模式启动
+		
+	3.spark的执行模式
+		spark-shell 不能 以集群模式启动
+		spark-submit --master spark://xxx:7077 -deploy-mode client  (默认启动模式)
+		
+		spark-submit --master spark://xxx:7077 --class wordCount -deploy-mode cluster /xx.jar -参数
 
 
+	4.spark yarn 模式
+	yarn模式不存在spark集群，也不需要每个节点都去安装spark软件包
+	只要在客户端安装spark即可，提交作业时，本质上是作为hadoop的一个job来执行
+	执行流程和hadoop是一致的，只不过在NM启动的yarnChild的时候，启动的是spark的excutor
+	
+	yarn-client
+		dirver 运行在client节点上,appMaster 只负责请求资源
+	yarn-cluster
+		driver 运行在appMaster上 APPmaster不但负责请求资源 还负责运行driver
+		
+		操作
+		
+		停止spark集群
+		启动yarn
+		考察webui
+		提交job
+		spark-submit --master yarn  --deploy-mode client  --class wordCount myspark.jar --参数
+		
+		
+		
 
 
 
