@@ -254,6 +254,171 @@ https://www.jianshu.com/p/02a17ff44931
 		spark-submit --master yarn  --deploy-mode client  --class wordCount myspark.jar --参数
 		
 		
+	5 为避免每次上传200m的spark包 性能过低
+		将spark-job上传的到hdfs 
+		配置spark，指定上传的文件
+		
+
+
+spark standlone 资源管理
+	1.sparkwork默认资源分配
+		cpu 
+		memory 
+		每个节点只启动一个worker实例
+	2.配置spark的资源
+		spark-env
+		
+		HADOOP_CONF_DIR
+		
+		#
+		export SPARK_WORKER_CORES=4
+		
+		export SPARK_WORKER_MEMORY
+		 
+		export SPARK_DAEMON_MEMORY
+		
+	
+
+
+Cluster deploy mode only:
+  --driver-cores NUM          Number of cores used by the driver, only in cluster mode
+                              (Default: 1).
+
+ Spark standalone or Mesos with cluster deploy mode only:
+  --supervise                 If given, restarts the driver on failure.
+  --kill SUBMISSION_ID        If given, kills the driver specified.
+  --status SUBMISSION_ID      If given, requests the status of the driver specified.
+
+ Spark standalone and Mesos only:
+  --total-executor-cores NUM  Total cores for all executors.
+
+ Spark standalone and YARN only:
+  --executor-cores NUM        Number of cores per executor. (Default: 1 in YARN mode,
+                              or all available cores on the worker in standalone mode)
+
+ YARN-only:
+  --queue QUEUE_NAME          The YARN queue to submit to (Default: "default").
+  --num-executors NUM         Number of executors to launch (Default: 2).
+                              If dynamic allocation is enabled, the initial number of
+                              executors will be at least NUM.
+  --archives ARCHIVES         Comma separated list of archives to be extracted into the
+                              working directory of each executor.
+  --principal PRINCIPAL       Principal to be used to login to KDC, while running on
+                              secure HDFS.
+  --keytab KEYTAB             The full path to the file that contains the keytab for the
+                              principal specified above. This keytab will be copied to
+                              the node running the Application Master via the Secure
+                              Distributed Cache, for renewing the login tickets and the
+                              delegation tokens periodically.
+
+
+
+spark 资源管理
+	1.master
+	2.worker
+
+sparkjob 的运行方式
+	1.standlone+client
+		启动spark集群 master worker
+		driver运行在某一个clien上
+		job提交方式分两步走  注册应用启动executor 提交job 在executor 启动task
+		
+	2.standlone+cluster
+	3.yarn +client
+		以hadoop作业的方式运行	
+	4.yarn+cluster
+
+
+
+
+
+广播变量
+----------------------------------
+	  import org.apache.spark.broadcast.Broadcast
+	  
+	  sparktask 对象携带有rdd和dep信息。这两部分是通过广播变量传播的
+	  内部原理是将stage的rdd和dep构成二元组 通过序列化成字节数组
+	  通过spark上下文，将字节数组包装成广播变量
+	  
+	  task对象关联的是广播变量
+	------------------广播变量的机制-------------
+	Broadcast  api
+	广播变量将对象缓存到执行器上，避免多次拷贝
+	
+	
+	
+	TorrentBroadcast
+	driver对串行化对象分割成小的chunk，并将这些chunk存放在driver的BlockManager
+	在executor端，每个executor尝试在自己的blockmanager中抓取对象，如果不存在 在远程的driver/executor抓取小的chunk
+	得到之后会存放到自己的blockmanager，也用于其他的executor的抓取
+	可以防止driver想executor发送多次数据拷贝请求引发的瓶颈问题
+	
+
+    val bc = sc.broadcast("ca")
+    bc.value
+	
+	
+累加器	
+------------------
+	用于跟踪和调试技术
+	在driver如果需要获取executor 的执行结果 ，可以使用累加机制
+	executor端使用累加add方法，将结果回传给driver端，driver能实现结果
+	
+	
+	
+val acc=sc.longAccumulator("myacc")
+ acc.add(e)//累加器
+ 
+ 
+ 自定义累加器
+ -----------------------
+ 
+ 自定义气温累加
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
 		
 
 

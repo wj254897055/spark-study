@@ -33,6 +33,6 @@ object SparkDemo {
       val avg=sum/cou
       (max,min,sum,cou,avg)
     }).sortByKey().collect().foreach(println)
-
   }
+
 }
