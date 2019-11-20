@@ -1,4 +1,4 @@
-package com.test.spark.day1
+package com.test.sparkbase.day1
 
 /**
   * 数据倾斜自定义分区

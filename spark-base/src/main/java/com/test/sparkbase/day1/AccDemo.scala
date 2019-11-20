@@ -1,4 +1,4 @@
-package com.test.spark.day1
+package com.test.sparkbase.day1
 
 import org.apache.spark.util.AccumulatorV2
 import org.apache.spark.{SparkConf, SparkContext}

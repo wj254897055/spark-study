@@ -1,5 +1,4 @@
-package com.test.spark.day2
-
+package com.test.sparkbase.day2
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}

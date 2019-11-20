@@ -1,4 +1,4 @@
-package com.test.spark.day1
+package com.test.sparkbase.day1
 
 /**
   * 获取历年气温
