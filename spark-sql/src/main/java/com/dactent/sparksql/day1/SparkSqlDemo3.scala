@@ -21,7 +21,7 @@ object SparkSqlDemo3 {
         val arr=line.split(",")
         (arr(0).toInt,arr(1),arr(2).toInt)
       })
-      .toDF()
+      .toDF("id","name","age")
     peopleDF.show()
 
   }

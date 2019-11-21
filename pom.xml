@@ -11,6 +11,7 @@
     <modules>
         <module>spark-sql</module>
         <module>spark-base</module>
+        <module>spark-streaming</module>
     </modules>
 
     <properties>

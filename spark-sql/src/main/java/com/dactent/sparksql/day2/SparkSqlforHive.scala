@@ -15,7 +15,6 @@ object SparkSqlforHive {
       .getOrCreate()
 
     spark.sql("select current_timestamp()").show(1000,false)
-    spark
   }
 
 }
