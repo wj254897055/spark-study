@@ -419,8 +419,31 @@ val acc=sc.longAccumulator("myacc")
  
  
  
+  
+ shuffleManage 注册shuffle的原理
+	shuffledependencY关联一个shufflehandle对象，该对象仅仅是标记对象，没有实质行为
+	通常对于模式匹配，给对象shuffleManage registerShuffle方法注册方法，最终shuffleManage
+	通过ShuffleDep对象判断生成哪种shuffleHandle
+	
+	产生链条
+	首先判断传统 ，然后串行化
+	
+	shuffleRDD ->shuffledependency->shuffleHandle->shuffleWriter
+	
+	最终生成的writeer
+
+
+Spark无缝集成sql集成hive
+------------------------------
+
+
+ peopleDF.createOrReplaceTempView("people")
  
- 
+ Spark SQL中的临时视图是会话作用域的，如果创建它的会话终止，它将消失。
+ 如果要在所有会话之间共享一个临时视图并保持活动状态，直到Spark应用程序终止，则可以创建全局临时视图。
+ 全局临时视图与系统保留的数据库相关联global_temp，我们必须使用限定名称来引用它
+ peopleDF.createGlobalTempView("people")
+
  
  
  
