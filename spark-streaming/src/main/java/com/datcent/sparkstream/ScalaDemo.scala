@@ -11,5 +11,4 @@ object ScalaDemo {
     var strings=getArray
     print(strings)
   }
-
 }

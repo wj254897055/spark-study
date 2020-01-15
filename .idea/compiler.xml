@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="spark-base" />
-        <module name="spark-sql" />
         <module name="spark-streaming" />
+        <module name="design-modle" />
+        <module name="spark-sql" />
+        <module name="spark-base" />
       </profile>
     </annotationProcessing>
   </component>
