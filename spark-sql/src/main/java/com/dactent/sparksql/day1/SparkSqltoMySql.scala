@@ -12,9 +12,11 @@ import org.apache.spark.sql.SparkSession
 object SparkSqltoMySql {
 
   def main(args: Array[String]): Unit = {
-    val spark=SparkSession.builder()
+    val spark=SparkSession
+      .builder()
       .appName("SparkSqltoMySql")
-      .master("local[*]").getOrCreate()
+      .master("local[*]")
+      .getOrCreate()
     //读取json 文件
     val df = spark.read
       .json("E:\\project\\bigdata\\data\\people.json")

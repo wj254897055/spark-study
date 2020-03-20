@@ -16,6 +16,13 @@ object SparkSqlReadMySql {
       .appName("SparkSqltoMySql")
       .master("local[*]").getOrCreate()
 
+    val aaa="dadada";
+
+    aaa.startsWith("da");
+    aaa.map(a => {
+      print(a)
+    })
+
     //创建myqsl lianjie
     val url="jdbc:mysql://192.168.245.210:3306/company"
     val table="sc"
