@@ -17,7 +17,7 @@ object WordCountDemo {
   val filepath: String = "file:///D:/wujing/data/hello.txt"
 
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setMaster("local").setAppName("RDDDemo")
+    val conf = new SparkConf().setMaster("local[*]").setAppName("RDDDemo")
     val sc = new SparkContext(conf)
     val rdd1 = sc.textFile(filepath,3)
     //压扁

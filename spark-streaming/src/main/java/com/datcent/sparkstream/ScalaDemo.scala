@@ -7,8 +7,7 @@ object ScalaDemo {
   }
 
   def main(args: Array[String]): Unit = {
-
-    var strings=getArray
-    print(strings)
+    val array = getArray
+    println(array)
   }
 }

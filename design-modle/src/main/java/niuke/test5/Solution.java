@@ -23,7 +23,7 @@ public class Solution {
     }
 
     public static void main(String[] args) {
-       int res= Fibonacci(2);
+       int res= Fibonacci(10);
         System.out.println("--------------");
         System.out.println(res);
     }

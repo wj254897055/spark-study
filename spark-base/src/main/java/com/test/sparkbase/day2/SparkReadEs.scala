@@ -18,7 +18,7 @@ object SparkReadEs {
     val conf = new SparkConf().setAppName("SparkReadEs").setMaster("local[*]")
       .set("cluster.name","elasticsearch")
       .set("es.nodes","es5x-node01.stage.dev.pi")
-      .set("es.port","9255")
+      .set("es.port","9200")
       .set("es.nodes.wan.only","true")
     val sc = new SparkContext(conf)
     readEs(sc)
@@ -39,6 +39,7 @@ object SparkReadEs {
 def readEs(sc: SparkContext) = {
   val value = EsSpark.esRDD(sc,"esb_default_jcnode-20191101")
   //value.collect().foreach(println)
+
 
 }
 

@@ -24,15 +24,15 @@ object SparkSqlReadMySql {
     })
 
     //创建myqsl lianjie
-    val url="jdbc:mysql://192.168.245.210:3306/company"
-    val table="sc"
+    val url="jdbc:mysql://192.168.1.121:3306/qsdi_ivdg"
+    val table="t_important_person"
     val prop = new Properties()
     prop.setProperty("driver","com.mysql.jdbc.Driver")
     prop.setProperty("user","root")
-    prop.setProperty("password","000000")
+    prop.setProperty("password","qsdi")
     //读取json 文件
     val df = spark.read.jdbc(url,table,prop)
-    df.show(100)
+    val unit = df.show(100)
   }
 
 }
