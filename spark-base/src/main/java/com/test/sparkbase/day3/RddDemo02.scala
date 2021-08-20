@@ -21,7 +21,7 @@ object RddDemo02 {
 
 }
 class SearchFunction(val query: String){
-  def isMacher(s:String): Boolean ={
+  def isMacher(s:String)={
     s.contains(query)
   }
 
