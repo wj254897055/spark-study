@@ -4,6 +4,25 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 object RddDemo02 {
+
+  class SearchFunction(val query: String){
+    def isMacher(s:String)={
+      s.contains(query)
+    }
+
+    def getMatchesFunction(rdd:RDD[String]) ={
+      rdd.map(isMacher)
+    }
+
+    def getMatchesFieldReference(rdd: RDD[String])={
+      rdd.map(x=>x.split(query))
+    }
+
+    def getMatchesRefence(rdd:RDD[String]) ={
+      val query_ = this.query
+      rdd.map(x=>x.split(query_))
+    }
+  }
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setMaster("local[*]").setAppName("rddDemo02")
     val sc = new SparkContext(conf)
@@ -20,21 +39,4 @@ object RddDemo02 {
   }
 
 }
-class SearchFunction(val query: String){
-  def isMacher(s:String)={
-    s.contains(query)
-  }
 
-  def getMatchesFunction(rdd:RDD[String]) ={
-    rdd.map(isMacher)
-  }
-
-  def getMatchesFieldReference(rdd: RDD[String])={
-    rdd.map(x=>x.split(query))
-  }
-
-  def getMatchesRefence(rdd:RDD[String]) ={
-    val query_ = this.query
-    rdd.map(x=>x.split(query_))
-  }
-}
